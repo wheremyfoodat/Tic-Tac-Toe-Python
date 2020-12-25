@@ -31,6 +31,7 @@ SOURCES += \
     src/CPU/exceptions.cpp \
     src/CPU/loads_stores.cpp \
     src/bus.cpp \
+    src/dma.cpp \
     src/main.cpp \
     src/psx.cpp
 

@@ -42,11 +42,11 @@ enum Exception {
 
 class CPU {
     std::array <u32, 32> regs;
-    u32 currentPC;
-    u32 nextPC;
-    u32 currentInstructionAddress; // used for exceptions
+    u32 currentPC; // the address of the instruction after the current one
+    u32 nextPC; // the address of the next instruction to be executed
+    u32 currentInstructionAddress; // the address of the instruction that's being executed, used for exceptions
     Bus* bus;
-    cop0_t cop0;
+    cop0_t cop0; // coprocessor 0
 
     u32 hi; // used in div/mul operations
     u32 lo; // used in div/mul operations
@@ -124,7 +124,6 @@ public:
         std::fill(regs.begin(), regs.end(), 0); // zero-fill registers
         hi = 0;
         lo = 0;
-        DEBUG_VAR_REMOVE_LATER = false;
 
         currentPC = 0xBFC0'0000; // BIOS start
         nextPC = currentPC + 4;

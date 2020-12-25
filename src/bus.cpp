@@ -12,6 +12,10 @@ Bus::Bus() {
     DMAControl.raw = 0x07654321; // default value on boot
     DMAInterruptControl.raw = 0;
     std::fill(DMAChannels.begin(), DMAChannels.end(), DMAChannel::DMAChannel()); // initialize DMA Channels
+
+    for (int i = 0; i < 7; i++) {
+        DMAChannels[i].channelNumber = i; // initialize indices
+    }
 }
 
 auto Bus::read8 (u32 address) -> u8 {
@@ -194,31 +198,31 @@ void Bus::write32 (u32 address, u32 value) {
 
             // DMA registers
             // DMA base addresses (only 24-bits are taken into account)
-            case 0x1F801080: DMAChannels[0].baseAddr = value & 0xFFFFFF; // DMA0 Base address
-            case 0x1F801090: DMAChannels[1].baseAddr = value & 0xFFFFFF; // DMA1 Base address
-            case 0x1F8010A0: DMAChannels[2].baseAddr = value & 0xFFFFFF; // DMA2 Base address
-            case 0x1F8010B0: DMAChannels[3].baseAddr = value & 0xFFFFFF; // DMA3 Base address
-            case 0x1F8010C0: DMAChannels[4].baseAddr = value & 0xFFFFFF; // DMA4 Base address
-            case 0x1F8010D0: DMAChannels[5].baseAddr = value & 0xFFFFFF; // DMA5 Base address
-            case 0x1F8010E0: DMAChannels[6].baseAddr = value & 0xFFFFFF; // DMA6 Base address
+            case 0x1F801080: DMAChannels[0].baseAddr = value & 0xFFFFFF; break; // DMA0 Base address
+            case 0x1F801090: DMAChannels[1].baseAddr = value & 0xFFFFFF; break; // DMA1 Base address
+            case 0x1F8010A0: DMAChannels[2].baseAddr = value & 0xFFFFFF; break; // DMA2 Base address
+            case 0x1F8010B0: DMAChannels[3].baseAddr = value & 0xFFFFFF; break; // DMA3 Base address
+            case 0x1F8010C0: DMAChannels[4].baseAddr = value & 0xFFFFFF; break; // DMA4 Base address
+            case 0x1F8010D0: DMAChannels[5].baseAddr = value & 0xFFFFFF; break; // DMA5 Base address
+            case 0x1F8010E0: DMAChannels[6].baseAddr = value & 0xFFFFFF; break; // DMA6 Base address
 
             // DMA Channel block control registers
-            case 0x1F801084: DMAChannels[0].blockControl.raw = value; // DMA0 block control register
-            case 0x1F801094: DMAChannels[1].blockControl.raw = value; // DMA1 block register
-            case 0x1F8010A4: DMAChannels[2].blockControl.raw = value; // DMA2 block register
-            case 0x1F8010B4: DMAChannels[3].blockControl.raw = value; // DMA3 block register
-            case 0x1F8010C4: DMAChannels[4].blockControl.raw = value; // DMA4 block register
-            case 0x1F8010D4: DMAChannels[5].blockControl.raw = value; // DMA5 block register
-            case 0x1F8010E4: DMAChannels[6].blockControl.raw = value; // DMA6 block register
+            case 0x1F801084: DMAChannels[0].blockControl.raw = value; break; // DMA0 block control register
+            case 0x1F801094: DMAChannels[1].blockControl.raw = value; break; // DMA1 block register
+            case 0x1F8010A4: DMAChannels[2].blockControl.raw = value; break; // DMA2 block register
+            case 0x1F8010B4: DMAChannels[3].blockControl.raw = value; break; // DMA3 block register
+            case 0x1F8010C4: DMAChannels[4].blockControl.raw = value; break; // DMA4 block register
+            case 0x1F8010D4: DMAChannels[5].blockControl.raw = value; break; // DMA5 block register
+            case 0x1F8010E4: DMAChannels[6].blockControl.raw = value; break; // DMA6 block register
 
             // DMA Channel control registers
-            case 0x1F801088: DMAChannels[0].control.raw = value; // DMA0 control register
-            case 0x1F801098: DMAChannels[1].control.raw = value; // DMA1 control register
-            case 0x1F8010A8: DMAChannels[2].control.raw = value; // DMA2 control register
-            case 0x1F8010B8: DMAChannels[3].control.raw = value; // DMA3 control register
-            case 0x1F8010C8: DMAChannels[4].control.raw = value; // DMA4 control register
-            case 0x1F8010D8: DMAChannels[5].control.raw = value; // DMA5 control register
-            case 0x1F8010E8: DMAChannels[6].control.raw = value; // DMA6 control register
+            case 0x1F801088: writeToDMAControl (0, value); break; // DMA0 control register
+            case 0x1F801098: writeToDMAControl (1, value); break; // DMA1 control register
+            case 0x1F8010A8: writeToDMAControl (2, value); break; // DMA2 control register
+            case 0x1F8010B8: writeToDMAControl (3, value); break; // DMA3 control register
+            case 0x1F8010C8: writeToDMAControl (4, value); break; // DMA4 control register
+            case 0x1F8010D8: writeToDMAControl (5, value); break; // DMA5 control register
+            case 0x1F8010E8: writeToDMAControl (6, value); break; // DMA6 control register
 
             case 0x1F801810: printf("Wrote to GP0 set command (Stubbed)\nCommand: %08X\n", value); break;
             case 0x1F801814: printf("Wrote to GP1 set command (Stubbed)\nCommand: %08X\n", value); break;

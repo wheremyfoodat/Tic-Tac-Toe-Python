@@ -1,6 +1,6 @@
 #include <iostream>
-#include "include/psx.h"
 #include <SDL.h>
+#include "include/psx.h"
 
 #undef main
 

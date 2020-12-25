@@ -23,6 +23,8 @@ class Bus {
     DICR_t DMAInterruptControl;
     std::array <DMAChannel, 7> DMAChannels;
 
+    void writeToDMAControl(int channel, u32 val);
+
 public:
     u8 read8 (u32 address);
     u16 read16 (u32 address);
