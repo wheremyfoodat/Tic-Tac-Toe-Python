@@ -139,9 +139,6 @@ struct DMAChannel {
         auto syncMode = (SyncMode) control.syncMode;
         auto triggered = !(syncMode == SyncMode::Immediate && !control.trigger); // If the sync mode is set to immediate, the trigger bit in the control reg needs to be set
 
-        if (enabled && triggered)
-            Helpers::panic("Enabled DMA channel %d\n", channelNumber);
-
         return enabled && triggered;
     }
 };

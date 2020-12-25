@@ -7,9 +7,6 @@ void CPU::step() {
     Instruction instruction; // our instruction bitfield
     instruction.raw = bus -> read32(currentPC); // we use 2 PC vars to handle delay slots and exceptions properly
 
-    if (DEBUG_VAR_REMOVE_LATER)
-        printf("Executing from %08X\n", currentPC);
-
     currentInstructionAddress = currentPC;
     currentPC = nextPC;
     nextPC += 4; // increment PC by 4 (size of 1 instruction)

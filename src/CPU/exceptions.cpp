@@ -28,7 +28,7 @@ void CPU::syscall() {
 
 void CPU::op_break() {
     printf("Break!\n");
-    fireException(Exception::Syscall);
+    fireException(Exception::Break);
 }
 
 void CPU::rfe(Instruction instruction) {

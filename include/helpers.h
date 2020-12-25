@@ -39,13 +39,30 @@ public:
         return ROM;
     }
 
+    static constexpr auto buildingInDebugMode() -> bool {
+        #ifdef NDEBUG
+            return false;
+         #endif
+
+         return true;
+    }
+
+    static void debug_printf (const char* fmt, ...) {
+        if constexpr (buildingInDebugMode()) {
+            std::va_list args;
+            va_start(args, fmt);
+            std::vprintf (fmt, args);
+            va_end(args);
+        }
+    }
+
     static constexpr auto signExtend32 (u32 value, u32 startingSize) -> u32 {
         auto temp = (s32) value;
         auto bitsToShift = 32 - startingSize;
         return (u32) (temp << bitsToShift >> bitsToShift);
     }
 
-    static constexpr auto isBitSet (u32 value, int bit) -> u32 {
+    static constexpr auto isBitSet (u32 value, int bit) -> bool {
         return (value >> bit) & 1;
     }
 };
