@@ -42,6 +42,7 @@ HEADERS += \
     include/dma.h \
     include/helpers.h \
     include/psx.h \
+    include/termcolor.hpp \
     include/types.h
 
 # Default rules for deployment.

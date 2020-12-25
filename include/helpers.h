@@ -2,18 +2,30 @@
 #include <vector>
 #include <cstdarg>
 #include <fstream>
+
 #include "types.h"
+#include "termcolor.hpp"
 
 class Helpers {
 public:
     [[noreturn]] static void panic(const char* fmt, ...) {
         std::va_list args;
         va_start(args, fmt);
-        std::printf ("[FATAL] ");
+        std::cout << termcolor::on_red << "[FATAL] ";
         std::vprintf (fmt, args);
+        std::cout << termcolor::reset;
         va_end(args);
 
         exit(1);
+    }
+
+    static void warn(const char* fmt, ...) {
+        std::va_list args;
+        va_start(args, fmt);
+        std::cout << termcolor::on_red << "[Warning] ";
+        std::vprintf (fmt, args);
+        std::cout << termcolor::reset;
+        va_end(args);
     }
 
     static auto loadROM(std::string directory) -> std::vector <u8> {

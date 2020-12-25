@@ -24,7 +24,9 @@ class Bus {
     std::array <DMAChannel, 7> DMAChannels;
 
     void writeToDMAControl(int channel, u32 val);
-    void DMA_transferBlock (SyncMode syncMode, Direction direction, Device device, u32 offset, u32 baseAddr, u32 length);
+    void DMA_transferBlock (SyncMode syncMode, Direction direction, Device device, u32 offset, u32 baseAddr, s64 length);
+    void DMA_transferLLs (Direction direction, Device device, u32 offset, u32 baseAddr);
+    void markDMAComplete (int channel);
 
 public:
     u8 read8 (u32 address);
