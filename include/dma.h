@@ -101,7 +101,7 @@ union LinkedListNode { // for DMAing LLs of GPU commands
     u32 raw;
     struct {
       unsigned next: 24; // The address of the next LL node. If 0xFF'FFFF, stop transferring LLs
-      unsigned commandCount: 8; // this shows us how many GPU commands to transfer for this nodes
+      unsigned commandCount: 8; // this shows us how many GPU commands to transfer for this node
     };
 };
 

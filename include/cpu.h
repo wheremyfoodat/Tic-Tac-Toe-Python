@@ -75,9 +75,13 @@ class CPU {
     void lb  (Instruction instruction, const bool signExtend);
     void lh  (Instruction instruction, const bool signExtend);
     void lw  (Instruction instruction);
+    void lwl (Instruction instruction);
+    void lwr (Instruction instruction);
     void sb  (Instruction instruction);
     void sh  (Instruction instruction);
     void sw  (Instruction instruction);
+    void swl (Instruction instruction);
+    void swr (Instruction instruction);
 
     void andi (Instruction instruction);
     void ori (Instruction instruction);

@@ -42,14 +42,17 @@ void CPU::execute (Instruction instruction) {
 
         case 0x20: lb(instruction, true); break; // this one sign extends the value (LB)
         case 0x24: lb(instruction, false); break; // this one doesn't (LBU)
-
         case 0x21: lh(instruction, true); break; // this one sign extends the value (LH)
         case 0x25: lh(instruction, false); break; // this one doesn't (LHU)
-
         case 0x23: lw(instruction); break;
+        case 0x22: lwl (instruction); break;
+        case 0x26: lwr (instruction); break;
+
         case 0x28: sb(instruction); break;
         case 0x29: sh(instruction); break;
+        case 0x2A: swl (instruction); break;
         case 0x2B: sw(instruction); break;
+        case 0x2E: swr (instruction); break;
 
         default: Helpers::panic("Unknown opcode: %X\nInstruction: %08X\n", opcode, instruction.raw);
     }

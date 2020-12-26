@@ -40,6 +40,7 @@ HEADERS += \
     include/cop0.h \
     include/cpu.h \
     include/dma.h \
+    include/gpu.h \
     include/helpers.h \
     include/psx.h \
     include/termcolor.hpp \

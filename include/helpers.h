@@ -77,4 +77,18 @@ public:
     static constexpr auto isBitSet (u32 value, int bit) -> bool {
         return (value >> bit) & 1;
     }
+
+    template <typename T>
+    static constexpr auto rotr (T value, int bits) -> T {
+        constexpr auto bitWidth = sizeof(T) * 8;
+        bits &= bitWidth - 1;
+        return (value >> bits) | (value << (bitWidth - bits));
+    }
+
+    template <typename T>
+    static constexpr auto rotl (T value, int bits) -> T {
+        constexpr auto bitWidth = sizeof(T) * 8;
+        bits &= bitWidth - 1;
+        return (value << bits) | (value >> (bitWidth - bits));
+    }
 };

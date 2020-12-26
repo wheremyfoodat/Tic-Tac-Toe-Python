@@ -28,7 +28,7 @@ void Bus::writeToDMAControl (int channel, u32 val) {
 
     switch (syncMode) {
         case SyncMode::Immediate: DMA_transferBlock(syncMode, direction, device, offset, baseAddr, length); break;
-        case SyncMode::SyncToDMARequests: Helpers::panic ("Weird DMA mode\n"); break;
+        case SyncMode::SyncToDMARequests: DMA_transferBlock(syncMode, direction, device, offset, baseAddr, length); break; // This should actually run the CPU between blocks. Tekken 3 depends on this...
         case SyncMode::LinkedList: DMA_transferLLs(direction, device, offset, baseAddr); break;
         case SyncMode::Reserved: Helpers::panic ("Illegal DMA\n"); break;
     }
@@ -41,9 +41,9 @@ void Bus::DMA_transferBlock (SyncMode syncMode, Direction direction, Device devi
     if (direction == ToRAM) {
         if (device ==  Device::OrderingTableClear) {
             while (length > 0) {
-                auto addr = baseAddr & 0x1FFFFC; // Wrap around the WRAM, forcibly word-align the address
-                auto val = (length != 1) ? ((addr - 4) & 0x1FFFFF) : 0xFFFFFF; // the value to write to the OT is based on the DMA baseAddr and it's supposed to be a pointer to the previous entry
-                                                                               // the last unit however points to the end of the table
+                auto addr = baseAddr & 0x1F'FFFC; // Wrap around the WRAM, forcibly word-align the address
+                auto val = (length != 1) ? ((addr - 4) & 0x1FFFFF) : 0xFFFFFF; // the value to write to the OT is based on the current DMA addr and it's supposed to be a pointer to the previous entry
+                                                                               // the last unit however points to the end of the table (0xFF'FFFF)
                                                                                // TODO: Optimize out the conditional, unconditionally set the last transferred word to 0xFFFFFF
                 *(u32*) &RAM[addr] = val; // write value to RAM
                 baseAddr += offset; // increment or decrement by 4 as appropriate
@@ -55,8 +55,20 @@ void Bus::DMA_transferBlock (SyncMode syncMode, Direction direction, Device devi
             Helpers::panic ("DMA to RAM from unknown device %d", device);
     }
 
-    else {
-        Helpers::panic("DMA from RAM");
+    else { // DMA from RAM
+        if (device == Device::GPU) {
+            while (length > 0) {
+                auto addr = baseAddr & 0x1F'FFFC; // Wrap around the WRAM, forcibly word-align the address
+                auto val = *(u32*) &RAM[addr]; // read 32 bits
+                std::printf ("Wrote %08X to GPU\n", val);
+
+                baseAddr += offset; // increment or decrement by 4 as appropriate
+                length -= 1;  // decrement unit counter
+            }
+        }
+
+        else
+            Helpers::panic ("DMA from RAM to unknown device: %d\n", device);
     }
 
     markDMAComplete((int) device); // signal that the DMA has finished

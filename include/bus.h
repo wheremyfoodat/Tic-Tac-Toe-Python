@@ -3,6 +3,7 @@
 #include <vector>
 #include "types.h"
 #include "dma.h"
+#include "gpu.h"
 
 class Bus {
     const std::array <u32, 8> REGION_MASKS = {
@@ -28,6 +29,9 @@ class Bus {
     void DMA_transferLLs (Direction direction, Device device, u32 offset, u32 baseAddr);
     void markDMAComplete (int channel);
 
+    // GPU stuff
+    class GPU* gpu;
+
 public:
     u8 read8 (u32 address);
     u16 read16 (u32 address);
@@ -36,5 +40,5 @@ public:
     void write8  (u32 address, u8 value);
     void write16 (u32 address, u16 value);
     void write32 (u32 address, u32 value);
-    Bus();
+    Bus(class GPU* _gpu);
 };

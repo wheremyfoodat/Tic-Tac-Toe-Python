@@ -2,7 +2,7 @@
 #include "include/helpers.h"
 #include "include/bus.h"
 
-Bus::Bus() {
+Bus::Bus(class GPU* _gpu) : gpu(_gpu) {
     constexpr auto kilobyte = 1024;
 
     BIOS = Helpers::loadROM("D:/Repos/Top secret/TopSecret/ROMs/BIOS.bin");
