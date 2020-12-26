@@ -61,7 +61,7 @@ auto Bus::read16 (u32 address) -> u16 {
         */
 
             case 0x1F801074: printf("Read from interrupt mask reg\n"); return 0;
-            case 0x1F801814: printf("Read from GPUSTAT\n"); return 0;
+            case 0x1F801814: printf("Read from GPUSTAT (16-bit) (Unimplemented)\n"); return 0;
             default: Helpers::panic("16-bit read from unimplemented IO addr %08X\n  ", address);
         }
     }
@@ -100,7 +100,7 @@ auto Bus::read32 (u32 address) -> u32 {
             case 0x1F8010F0: printf("Read from DPCR\n"); return DMAControl.raw;
             case 0x1F8010F4: printf("Read from DICR\n"); return DMAInterruptControl.raw;
             case 0x1F801810: printf("Read from GPUREAD (Stubbed)\n"); return 0;
-            case 0x1F801814: printf("Read from GPUSTAT (Stubbed)\n"); return 0x1C00'0000; // Signal that the GPU is ready to receive stuff from the CPU/DMAC
+            case 0x1F801814: printf("Read from GPUSTAT (Stubbed)\n"); return gpu -> status.raw; // Signal that the GPU is ready to receive stuff from the CPU/DMAC
             default: return 0;//Helpers::panic("32-bit read from unimplemented IO addr %08X\n", address);
         }
     }
@@ -224,8 +224,8 @@ void Bus::write32 (u32 address, u32 value) {
             case 0x1F8010D8: writeToDMAControl (5, value); break; // DMA5 control register
             case 0x1F8010E8: writeToDMAControl (6, value); break; // DMA6 control register
 
-            case 0x1F801810: printf("Wrote to GP0 set command (Stubbed)\nCommand: %08X\n", value); break;
-            case 0x1F801814: printf("Wrote to GP1 set command (Stubbed)\nCommand: %08X\n", value); break;
+            case 0x1F801810: printf("Wrote to GP0 set command (Stubbed)\nCommand: %08X\n", value); gpu -> gp0_command (value); break;
+            case 0x1F801814: printf("Wrote to GP1 set command (Stubbed)\nCommand: %08X\n", value); gpu -> gp1_command (value); break;
             default: printf("32-bit write to unimplemented IO addr %08X\n", address); break;
         }
     }

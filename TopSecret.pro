@@ -30,6 +30,9 @@ SOURCES += \
     src/CPU/cpu.cpp \
     src/CPU/exceptions.cpp \
     src/CPU/loads_stores.cpp \
+    src/GPU/gp0.cpp \
+    src/GPU/gp1.cpp \
+    src/GPU/gpu.cpp \
     src/bus.cpp \
     src/dma.cpp \
     src/main.cpp \

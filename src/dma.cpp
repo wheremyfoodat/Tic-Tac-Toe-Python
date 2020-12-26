@@ -93,6 +93,7 @@ void Bus::DMA_transferLLs(Direction direction, Device device, u32 offset, u32 ba
             baseAddr &= 0x1F'FFFC; // wrap addr around WRAM and force-align
             auto command = *(u32*) &RAM[baseAddr]; // read a command from memory
             std::printf ("GPU command %08X\n", command);
+            gpu -> gp0_command(command);
             baseAddr += 4; // increment pointer
             node.commandCount -= 1; // decrement command count
         }

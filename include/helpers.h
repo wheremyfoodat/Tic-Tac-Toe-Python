@@ -74,6 +74,12 @@ public:
         return (u32) (temp << bitsToShift >> bitsToShift);
     }
 
+    static constexpr auto signExtend16 (u16 value, u32 startingSize) -> u16 {
+        auto temp = (s16) value;
+        auto bitsToShift = 16 - startingSize;
+        return (u16) (temp << bitsToShift >> bitsToShift);
+    }
+
     static constexpr auto isBitSet (u32 value, int bit) -> bool {
         return (value >> bit) & 1;
     }
