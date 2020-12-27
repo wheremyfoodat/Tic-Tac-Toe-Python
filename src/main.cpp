@@ -1,13 +1,15 @@
 #include <iostream>
-#include <SDL.h>
 #include "include/psx.h"
+#include "include/renderer.h"
 
-#undef main
+constexpr auto CYCLES_PER_FRAME = 33'868'800 / 60;
 
 auto main(int argc, char *argv[]) -> int {
     auto psx = new PSX();
 
     while (true) {
-        psx -> step();
+        for (int i = 0; i < CYCLES_PER_FRAME; i++)
+           psx -> step();
+        psx -> render();
     }
 }

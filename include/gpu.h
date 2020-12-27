@@ -1,6 +1,11 @@
 #pragma once
+#include <array>
 #include "types.h"
+#include "renderer.h"
 #include "helpers.h"
+
+const auto WIDTH = 1024;
+const auto HEIGHT = 512;
 
 union GPUSTAT {
     u32 raw;
@@ -122,23 +127,68 @@ public:
     u16 display_v_start;
     u16 display_v_end;
 
-    GPU() {
+    std::array <u32, 32> commandParameters; // a buffer of parameters for GP0 commands, as those are variable-length
+    u32 paramsFetched = 0; // the amount of gp0 we've fetched
+    u32 paramsToFetch = 0; // the amount of gp0 params needed to fetch to execute an instruction
+    u32 lastGP0Opcode = 0; // the last GP0 opcode we received (used to handle variable length instructions)
+
+    bool fetchingGP0Params = false; // whether we're fetching GP0 params or we're ready to execute GP0 opcodes
+    bool fetchingTextureData = false; // if this is 1, GP0 is fetching texture data, NOT commands
+
+    BeegRenderer renderer; // the renderer;
+    const unsigned int commandLengths[256] = {
+            //0  1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+             1,  1,  3,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, //0
+             1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, //1
+             4,  4,  4,  4,  7,  7,  7,  7,  5,  5,  5,  5,  9,  9,  9,  9, //2
+             6,  6,  6,  6,  9,  9,  9,  9,  8,  8,  8,  8, 12, 12, 12, 12, //3
+             3,  3,  3,  3,  3,  3,  3,  3, 16, 16, 16, 16, 16, 16, 16, 16, //4
+             4,  4,  4,  4,  4,  4,  4,  4, 16, 16, 16, 16, 16, 16, 16, 16, //5
+             3,  3,  3,  1,  4,  4,  4,  4,  2,  1,  2,  1,  3,  3,  3,  3, //6
+             2,  1,  2,  1,  3,  3,  3,  3,  2,  1,  2,  2,  3,  3,  3,  3, //7
+             4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, //8
+             4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, //9
+             3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, //A
+             3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, //B
+             3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, //C
+             3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, //D
+             1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, //E
+             1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1  //F
+    };
+
+    GPU() : renderer (WIDTH, HEIGHT, "Poopstation") { // initialize renderer
         status.raw = 0x1C00'0000; // Signal that the GPU is ready to receive stuff from the CPU/DMAC
         rectangle_texture_h_flip = false; // turn texture flipping off
         rectangle_texture_v_flip = false;
 
+        std::fill (commandParameters.begin(), commandParameters.end(), 0); // clear command parameter buffer
         gp1_softReset(); // call the GP1 soft reset command to perform a soft reset of the GPU state
     }
 
     void gp0_command (u32 val);
     void gp1_command (u32 val);
+    void bufferCommand (u32 val); // buffer GP0 command
 
+    // config commands
     void gp1_softReset();
     void gp1_setDMADirection (GP1_cmd command);
 
     void gp0_draw_mode (GP0_cmd command);
     void gp0_set_drawing_offset (GP0_cmd command);
+    void gp0_set_texture_window (GP0_cmd command);
+    void gp0_set_mask_bit (GP0_cmd command);
     void gp0_set_drawing_area_top_left (GP0_cmd command);
     void gp0_set_drawing_area_bottom_right (GP0_cmd command);
+    void gp0_load_texture();
+
     void gp1_display_mode (GP1_cmd command);
+    void gp1_set_display_area_start (GP1_cmd command);
+    void gp1_set_display_horizontal_range (GP1_cmd command);
+    void gp1_set_display_vertical_range (GP1_cmd command);
+    void gp1_display_enable (GP1_cmd command);
+
+    // draw commands
+    void quad_monochrome();
+    void quad_shaded();
+    void tri_shaded();
 };

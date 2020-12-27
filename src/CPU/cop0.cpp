@@ -2,14 +2,14 @@
 #include "include/types.h"
 #include "include/helpers.h"
 
-void CPU::cop0_op (Instruction instruction) {
-    switch (instruction.r.rs) { // the rs field is used to select the cop0 opcode in this instruction
-        case 0b00000: mfc0(instruction); break;
-        case 0b00100: mtc0(instruction); break;
-        case 0b10000: rfe(instruction); break;
-        default: Helpers::panic("Unknown cop0 opcode: %X\nPC: %08X\n", instruction.r.rs);
+    void CPU::cop0_op (Instruction instruction) {
+        switch (instruction.r.rs) { // the rs field is used to select the cop0 opcode in this instruction
+            case 0b00000: mfc0(instruction); break;
+            case 0b00100: mtc0(instruction); break;
+            case 0b10000: rfe(instruction); break;
+            default: Helpers::panic("Unknown cop0 opcode: %X\nPC: %08X\n", instruction.r.rs);
+        }
     }
-}
 
 void CPU::mtc0 (Instruction instruction) {
     auto val = regs[instruction.r.rt]; // value to be written to the cop0 register is stored in rt

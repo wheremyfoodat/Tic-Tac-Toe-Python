@@ -31,7 +31,7 @@ union cop0_status {
         unsigned cu0_enable: 1; // 0 = Kernel mode, 1 = Kernel/User mode
         unsigned cu1_enable: 1; // None in the PSX
         unsigned cu2_enable: 1; // GTE
-        unsigned cu3_enable: 3; // None in the pSX
+        unsigned cu3_enable: 1; // None in the pSX
     } ;
 };
 

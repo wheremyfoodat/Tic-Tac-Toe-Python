@@ -100,7 +100,7 @@ auto Bus::read32 (u32 address) -> u32 {
             case 0x1F8010F0: printf("Read from DPCR\n"); return DMAControl.raw;
             case 0x1F8010F4: printf("Read from DICR\n"); return DMAInterruptControl.raw;
             case 0x1F801810: printf("Read from GPUREAD (Stubbed)\n"); return 0;
-            case 0x1F801814: printf("Read from GPUSTAT (Stubbed)\n"); return gpu -> status.raw; // Signal that the GPU is ready to receive stuff from the CPU/DMAC
+            case 0x1F801814: printf("Read from GPUSTAT (Stubbed)\n"); return gpu -> status.raw & ~(1 << 19); // Signal that the GPU is ready to receive stuff from the CPU/DMAC. Turning off bit 19 because of some shit that makes the BIOS hang.
             default: return 0;//Helpers::panic("32-bit read from unimplemented IO addr %08X\n", address);
         }
     }

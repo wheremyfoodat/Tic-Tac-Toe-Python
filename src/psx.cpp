@@ -9,3 +9,7 @@ PSX::PSX() {
 void PSX::step() {
     cpu -> step();
 }
+
+void PSX::render() {
+    gpu -> renderer.draw();
+}

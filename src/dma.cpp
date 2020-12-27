@@ -60,7 +60,7 @@ void Bus::DMA_transferBlock (SyncMode syncMode, Direction direction, Device devi
             while (length > 0) {
                 auto addr = baseAddr & 0x1F'FFFC; // Wrap around the WRAM, forcibly word-align the address
                 auto val = *(u32*) &RAM[addr]; // read 32 bits
-                std::printf ("Wrote %08X to GPU\n", val);
+                gpu -> gp0_command(val);
 
                 baseAddr += offset; // increment or decrement by 4 as appropriate
                 length -= 1;  // decrement unit counter

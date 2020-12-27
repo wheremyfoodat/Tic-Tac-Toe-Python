@@ -12,4 +12,5 @@ class PSX {
 public:
     PSX();
     void step();
+    void render();
 };

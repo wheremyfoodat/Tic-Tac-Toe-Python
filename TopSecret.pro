@@ -4,13 +4,21 @@ CONFIG += c++17 console
 CONFIG -= app_bundle
 
 # SDL stuff
-SDL2_PATH = D:\SDL
-LIBS += -L$${SDL2_PATH}\lib\x64 -lSDL2 -lSDL2main -lSDL2_image
-INCLUDEPATH += $${SDL2_PATH}\include
+# SDL2_PATH = D:\SDL
+# LIBS += -L$${SDL2_PATH}\lib\x64 -lSDL2 -lSDL2main -lSDL2_image
+# INCLUDEPATH += $${SDL2_PATH}\include
 
-QMAKE_LFLAGS += $$QMAKE_LFLAGS_WINDOWS
-QMAKE_LFLAGS += -lSDL2main -lSDL2 -lSDL2_image -mwindows
-QMAKE_LINK += -lSDL2main -lSDL2 -lSDL2_image -mwindows
+# QMAKE_LFLAGS += $$QMAKE_LFLAGS_WINDOWS
+# QMAKE_LFLAGS += -lSDL2main -lSDL2 -lSDL2_image -mwindows
+# QMAKE_LINK += -lSDL2main -lSDL2 -lSDL2_image -mwindows
+
+# SFML stuff
+SFML_PATH = D:\SFML
+LIBS += -L$${SFML_PATH}\lib -lsfml-main -lsfml-window -lsfml-system -lsfml-graphics
+INCLUDEPATH += $${SFML_PATH}\include
+
+QMAKE_LFLAGS += -lsfml-main -lsfml-window -lsfml-system -lsfml-graphics
+QMAKE_LINK += -lsfml-main -lsfml-window -lsfml-system -lsfml-graphics
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -30,6 +38,7 @@ SOURCES += \
     src/CPU/cpu.cpp \
     src/CPU/exceptions.cpp \
     src/CPU/loads_stores.cpp \
+    src/GPU/draw_calls.cpp \
     src/GPU/gp0.cpp \
     src/GPU/gp1.cpp \
     src/GPU/gpu.cpp \
@@ -46,6 +55,7 @@ HEADERS += \
     include/gpu.h \
     include/helpers.h \
     include/psx.h \
+    include/renderer.h \
     include/termcolor.hpp \
     include/types.h
 

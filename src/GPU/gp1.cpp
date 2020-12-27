@@ -40,3 +40,22 @@ void GPU::gp1_display_mode(GP1_cmd command) {
 void GPU::gp1_setDMADirection(GP1_cmd command) {
     status.dma_direction = command.raw & 3;
 }
+
+void GPU::gp1_set_display_area_start(GP1_cmd command) {
+    vram_x_start = command.raw & 0x3FE; // x coord's 0th bit is masked out
+    vram_y_start = (command.raw >> 10) & 0x1FF;
+}
+
+void GPU::gp1_set_display_horizontal_range (GP1_cmd command) {
+    display_h_start = command.raw & 0xFFF;
+    display_h_end = (command.raw >> 12) & 0xFFF;
+}
+
+void GPU::gp1_set_display_vertical_range (GP1_cmd command) {
+    display_h_start = command.raw & 0x3FF;
+    display_h_end = (command.raw >> 10) & 0x3FF;
+}
+
+void GPU::gp1_display_enable(GP1_cmd command) {
+    status.display_enabled = command.raw & 1;
+}
