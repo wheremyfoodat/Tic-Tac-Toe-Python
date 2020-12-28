@@ -132,6 +132,15 @@ public:
     u32 paramsToFetch = 0; // the amount of gp0 params needed to fetch to execute an instruction
     u32 lastGP0Opcode = 0; // the last GP0 opcode we received (used to handle variable length instructions)
 
+    u32 texture_upload_x_start = 0;
+    u32 texture_upload_y_start = 0;
+
+    u32 texture_upload_x = 0;
+    u32 texture_upload_y = 0;
+
+    u32 texture_upload_x_end = 0;
+    u32 texture_upload_y_end = 0;
+
     bool fetchingGP0Params = false; // whether we're fetching GP0 params or we're ready to execute GP0 opcodes
     bool fetchingTextureData = false; // if this is 1, GP0 is fetching texture data, NOT commands
 
@@ -188,7 +197,66 @@ public:
     void gp1_display_enable (GP1_cmd command);
 
     // draw commands
-    void quad_monochrome();
-    void quad_shaded();
-    void tri_shaded();
+    template <const bool semi_transparent>
+    void quad_monochrome () {
+        auto color = commandParameters[0] & 0xFF'FFFF; // the 24 bit RGB color of the quad
+
+        auto vertex1 = commandParameters[1];
+        auto vertex2 = commandParameters[2];
+        auto vertex3 = commandParameters[3];
+        auto vertex4 = commandParameters[4];
+
+        renderer.push_quad <semi_transparent> (vertex1, vertex2, vertex3, vertex4, color);
+    }
+
+    template <const bool semi_transparent>
+    void tri_monochrome() {
+        auto color = commandParameters[0] & 0xFF'FFFF;
+        auto vertex1 = commandParameters[1];
+        auto vertex2 = commandParameters[2];
+        auto vertex3 = commandParameters[3];
+
+        renderer.push_tri <semi_transparent> (vertex1, vertex2, vertex3, color);
+    }
+
+    template <const bool semi_transparent>
+    void quad_shaded() {
+        auto color1 = commandParameters[0] & 0xFF'FFFF;
+        auto vertex1 = commandParameters[1];
+
+        auto color2 = commandParameters[2] & 0xFF'FFFF;
+        auto vertex2 = commandParameters[3];
+
+        auto color3 = commandParameters[4] & 0xFF'FFFF;
+        auto vertex3 = commandParameters[5];
+
+        auto color4 = commandParameters[6] & 0xFF'FFFF;
+        auto vertex4 = commandParameters[7];
+
+        renderer.push_quad <semi_transparent> (vertex1, color1, vertex2, color2, vertex3, color3, vertex4, color4);
+    }
+
+    template <const bool semi_transparent>
+    void tri_shaded () {
+        auto color1 = commandParameters[0] & 0xFF'FFFF;
+        auto vertex1 = commandParameters[1];
+
+        auto color2 = commandParameters[2] & 0xFF'FFFF;
+        auto vertex2 = commandParameters[3];
+
+        auto color3 = commandParameters[4] & 0xFF'FFFF;
+        auto vertex3 = commandParameters[5];
+
+        renderer.push_tri <semi_transparent> (vertex1, color1, vertex2, color2, vertex3, color3);
+    }
+
+    template <const bool semi_transparent>
+    void textured_quad_blend() {
+        auto vertex1 = commandParameters[1];
+        auto vertex2 = commandParameters[3];
+        auto vertex3 = commandParameters[5];
+        auto vertex4 = commandParameters[7];
+
+        renderer.push_quad <semi_transparent> (vertex1, vertex2, vertex3, vertex4, 0xFF);
+    }
 };

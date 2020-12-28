@@ -10,11 +10,19 @@ void GPU::gp0_command(u32 val) {
             paramsFetched = 0;
 
             switch (lastGP0Opcode) {
-                case 0x28: quad_monochrome(); break;
-                case 0x30: tri_shaded(); break;
-                case 0x38: quad_shaded(); break;
+                case 0x20: tri_monochrome <false>(); break;
+                case 0x22: tri_monochrome <true>(); break;
+
+                case 0x28: quad_monochrome <false>(); break;
+                case 0x2A: quad_monochrome <true>(); break;
+
+                case 0x30: tri_shaded <false>(); break;
+                case 0x32: tri_shaded <true>(); break;
+
+                case 0x38: quad_shaded <false>(); break;
+                case 0x3A: quad_shaded <true>(); break;
                 case 0xA0: gp0_load_texture(); break;
-                case 0x2C: Helpers::warn ("[GPU] Tried to draw textured quadrilateral with alpha blending\n");
+                case 0x2C: Helpers::warn ("[GPU] Tried to draw textured quadrilateral with alpha blending\n"); textured_quad_blend <false> (); break;
                 case 0xC0: Helpers::warn ("[GPU] Tried to send texture data to CPU\n"); break;
                 default: Helpers::panic ("Unknown multi-parameter GP0 opcode: %08X\n", lastGP0Opcode);
             }
@@ -26,6 +34,14 @@ void GPU::gp0_command(u32 val) {
     else if (fetchingTextureData) { // handle fetching textures
         std::printf ("Received texture data word: %08X\n", val);
         paramsFetched += 1;
+
+        renderer.vram.setPixel(texture_upload_x & 0x3FF, texture_upload_y & 0x1FF, val);
+        texture_upload_x += 1;
+
+        if (texture_upload_x == texture_upload_x_end) {
+            texture_upload_x = texture_upload_x_start;
+            texture_upload_y += 1;
+        }
 
         if (paramsFetched == paramsToFetch) // check if word count has been reached
             fetchingTextureData = false;
@@ -39,9 +55,14 @@ void GPU::gp0_command(u32 val) {
         case 0x00: break; // NOP
         case 0x01: Helpers::warn ("[GPU] Tried to flush texture cache\n"); break;
 
+        case 0x20: bufferCommand(val); break;
+        case 0x22: bufferCommand(val); break;
         case 0x28: bufferCommand(val); break;
+        case 0x2A: bufferCommand(val); break;
         case 0x30: bufferCommand(val); break;
+        case 0x32: bufferCommand(val); break;
         case 0x38: bufferCommand(val); break;
+        case 0x3A: bufferCommand(val); break;
         case 0xA0: bufferCommand(val); break;
         case 0x2C: bufferCommand(val); break;
         case 0xC0: bufferCommand(val); break;

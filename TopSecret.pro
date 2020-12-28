@@ -42,6 +42,7 @@ SOURCES += \
     src/GPU/gp0.cpp \
     src/GPU/gp1.cpp \
     src/GPU/gpu.cpp \
+    src/GPU/vram.cpp \
     src/bus.cpp \
     src/dma.cpp \
     src/main.cpp \

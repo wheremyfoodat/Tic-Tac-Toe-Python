@@ -93,3 +93,12 @@ void CPU::executeSpecial (Instruction instruction) {
         default: Helpers::panic("Special instruction with unknown opcode: %X\n", opcode);
     }
 }
+
+void CPU::sideload_init_regs (u32 newPC, u32 newSP, u32 newGP) {
+    currentPC = newPC;
+    nextPC = currentPC + 4;
+
+    regs[28] = newGP;
+    regs[29] = newSP;
+    regs[30] = newSP;
+}

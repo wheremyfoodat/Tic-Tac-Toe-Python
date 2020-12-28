@@ -1,3 +1,4 @@
+#include <cassert>
 #include "include/gpu.h"
 #include "include/helpers.h"
 
@@ -46,17 +47,30 @@ void GPU::gp0_draw_mode(GP0_cmd command) {
 }
 
 void GPU::gp0_load_texture() {
+
     fetchingTextureData = true;
     paramsFetched = 0; // this will now be used as the number of halfwords that have been fetched
 
     auto dest = commandParameters[1];
     u32 dimensions = commandParameters[2];
 
+    auto x_dest = dest & 0xFFFF;
+    auto y_dest = dest >> 16;
+
     auto x_size = dimensions & 0xFFFF;
     auto y_size = dimensions >> 16;
+
+    texture_upload_x = x_dest;
+    texture_upload_y = y_dest;
+    texture_upload_x_start = x_dest;
+    texture_upload_y_start = y_dest;
+
+    texture_upload_x_end = x_dest + x_size ;
+    texture_upload_y_end = y_dest + y_size;
 
     auto size = x_size * y_size; // size in halfwords (1 halfword = 1 pixel)
     size += size & 1; // if size is odd, add 1 more halfword
     paramsToFetch = size >> 1; // fetch (size / 2) words
 
+    assert (size != 0);
 }

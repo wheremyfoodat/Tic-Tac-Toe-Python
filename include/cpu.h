@@ -137,4 +137,5 @@ public:
     };
 
     void step();
+    void sideload_init_regs (u32 newPC, u32 newSP, u32 newGP);
 };

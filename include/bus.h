@@ -13,7 +13,6 @@ class Bus {
         0xFFFFFFFF, 0xFFFFFFFF,                          // KSEG2 (1024 MB)
     };
 
-    std::vector<u8> ROM;
     std::vector<u8> RAM;
     std::vector<u8> expansion1;
     std::vector<u8> scratchpad;
@@ -41,4 +40,6 @@ public:
     void write16 (u32 address, u16 value);
     void write32 (u32 address, u32 value);
     Bus(class GPU* _gpu);
+
+    std::vector<u8> ROM;
 };

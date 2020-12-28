@@ -39,6 +39,7 @@ void GPU::gp1_display_mode(GP1_cmd command) {
 
 void GPU::gp1_setDMADirection(GP1_cmd command) {
     status.dma_direction = command.raw & 3;
+    Helpers::warn ("Set DMA direction\n");
 }
 
 void GPU::gp1_set_display_area_start(GP1_cmd command) {

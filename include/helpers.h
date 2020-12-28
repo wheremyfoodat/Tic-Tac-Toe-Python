@@ -84,15 +84,6 @@ public:
         return (value >> bit) & 1;
     }
 
-    // BGR888 -> RGBA8888 (opaque)
-    static auto BGRToRGBA (u32 value) -> u32 {
-        auto r = value & 0xFF;
-        auto g = (value >> 8) & 0xFF;
-        auto b = (value >> 16) & 0xFF;
-
-        return (r << 24) | (g << 16) | (b << 8) | 0xFF;
-    }
-
     template <typename T>
     static constexpr auto rotr (T value, int bits) -> T {
         constexpr auto bitWidth = sizeof(T) * 8;
